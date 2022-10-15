@@ -37,5 +37,5 @@ convert :: Poly -> Int -> String
 convert [] _ = ""
 convert ((x,l1,l2):xs) 0 = show x ++ "*" ++ recursiveShow (zip l1 l2) ++ convert xs 1
 convert ((x,l1,l2):xs) cnt
-    | x > 0 = "+" ++ show x ++ "*" ++ recursiveShow (zip l1 l2) ++ convert xs (cnt+1)
-    | otherwise = show x ++ "*" ++ recursiveShow (zip l1 l2) ++ convert xs (cnt+1)
+    | x > 0 = " + " ++ show x ++ "*" ++ recursiveShow (zip l1 l2) ++ convert xs (cnt+1)
+    | otherwise = " " ++ show x ++ "*" ++ recursiveShow (zip l1 l2) ++ convert xs (cnt+1)
