@@ -42,23 +42,25 @@ recursiveShow :: [(Char, Int)] -> String
 recursiveShow [] = ""
 recursiveShow ((a,0):xs) = recursiveShow xs
 recursiveShow ((a,b):xs)
-    | null xs = [a] ++ "^" ++ show b
-    | otherwise = [a] ++ "^" ++ show b ++ "*" ++ recursiveShow xs
+    | null xs = "*" ++ [a] ++ "^" ++ show b
+    | otherwise = "*" ++ [a] ++ "^" ++ show b ++  recursiveShow xs
 
 
 convert :: Poly -> Int -> String
 convert [] _ = ""
-convert ((x,l1,l2):xs) 0 = show x ++ "*" ++ recursiveShow (zip l1 l2) ++ convert xs 1
+convert ((x,l1,l2):xs) 0 = show x  ++ recursiveShow (zip l1 l2) ++ convert xs 1
 convert ((x,l1,l2):xs) cnt
-    | x > 0 = " + " ++ show x ++ "*" ++ recursiveShow (zip l1 l2) ++ convert xs (cnt+1)
-    | otherwise = " " ++show x ++ "*" ++ recursiveShow (zip l1 l2) ++ convert xs (cnt+1)
+    | x > 0 = " + " ++ show x ++ recursiveShow (zip l1 l2) ++ convert xs (cnt+1)
+    | otherwise = " " ++show x ++ recursiveShow (zip l1 l2) ++ convert xs (cnt+1)
 
 l :: [(Int, [Char], [Int])]
-l = [(0, ['x','y','z'], [2,0,0]), (2, ['x','y','z'], [0,1,0]), (5, ['x','y','z'], [0, 0, 1]), (1, ['x','y','z'], [0, 1, 0]), (7, ['x','y','z'], [0, 2, 0]), (2, ['x','y','z'], [1, 0, 0])]
-
+l = [(2, ['x','y','z'], [0,1,2]), (-6, ['x','y','z'], [0,1,2]), (4, ['x','y','z'], [0, 0, 3]), (5, ['x','y','z'], [0, 0, 3])]
+    --[(0, ['x','y','z'], [2,0,0]), (2, ['x','y','z'], [0,1,0]), (5, ['x','y','z'], [0, 0, 1]), (1, ['x','y','z'], [0, 1, 0]), (7, ['x','y','z'], [0, 2, 0]), (2, ['x','y','z'], [1, 0, 0])]
     --[(2, ['x','y','z'], [0,1,2]), (-6, ['x','y','z'], [0,1,2]), (4, ['x','y','z'], [0, 0, 3]), (5, ['x','y','z'], [0, 0, 3])]
     --[(0, ['x','y','z'], [2,0,0]), (2, ['x','y','z'], [0,1,0]), (5, ['x','y','z'], [0, 0, 1]), (1, ['x','y','z'], [0, 1, 0]), (7, ['x','y','z'], [0, 2, 0])]
 
+addPoly :: Poly -> Poly -> String
+addPoly poly1 poly2 = convert (orderPoly (remove0 (normalize (poly1 ++ poly2)))) 0
 
 start :: Poly -> String
 start l = convert (orderPoly(normalize (remove0 l ))) 0
