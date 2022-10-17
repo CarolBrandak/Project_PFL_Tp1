@@ -3,14 +3,14 @@
 ### Ver enunciado [aqui](https://moodle.up.pt/pluginfile.php/121553/mod_resource/content/1/PFL_TP1_2022-23.pdf) <br/>
 
 TODO:
-
  - [x] Output ser string
  - [ ] Organizar
  - [x] Normalizar um polinomio a
  - [x] Adicionar polinomios b
  - [ ] Multiplicar polinomios c
  - [ ] Derivado de um polinomio d
- Extra:
+
+Extra:
  - [ ] Input ser string
 
 
