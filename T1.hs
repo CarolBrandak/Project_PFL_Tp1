@@ -60,6 +60,17 @@ outputNormalize l = convert (orderPoly (normalize (remove0 l))) 0
 addPoly :: Poly -> Poly -> String --Adiciona os 2 polinomios
 addPoly poly1 poly2 = convert (orderPoly (remove0 (normalize (poly1 ++ poly2)))) 0
 
+generatePoly :: Poly -> Poly -> [(Monomio, Monomio)]
+generatePoly p1 p2 = [(a,b) | a <- p1, b <- p2]
+
+multiplyMono :: [(Monomio, Monomio)] -> Poly
+multiplyMono ((m1, m2):xs) = addCoef m1 m2 : multiplyMono xs 
+
+addCoef :: Monomio -> Monomio -> Monomio
+addCoef (a, lc1, ln1) (b, lc2, ln2) = 
+
+
+
 l :: [(Int, [Char], [Int])]
 l = [(2, ['x', 'y', 'z'], [0, 1, 2]), (-6, ['x', 'y', 'z'], [0, 1, 2]), (4, ['x', 'y', 'z'], [0, 0, 3]), (5, ['x', 'y', 'z'], [0, 0, 3])]
 
@@ -67,17 +78,16 @@ l = [(2, ['x', 'y', 'z'], [0, 1, 2]), (-6, ['x', 'y', 'z'], [0, 1, 2]), (4, ['x'
 --[(2, ['x','y','z'], [0,1,2]), (-6, ['x','y','z'], [0,1,2]), (4, ['x','y','z'], [0, 0, 3]), (5, ['x','y','z'], [0, 0, 3])]
 --[(0, ['x','y','z'], [2,0,0]), (2, ['x','y','z'], [0,1,0]), (5, ['x','y','z'], [0, 0, 1]), (1, ['x','y','z'], [0, 1, 0]), (7, ['x','y','z'], [0, 2, 0])]
 
-{-
-main :: IO ()
+main :: IO () --Menu
 main = do
-  putStrLn "1. Normalizar : "
-  putStrLn "2. Adicionar : "
-  putStrLn "3. Multiplicar : "
-  putStrLn "4. Derivada : "
-  nr <-
-    getChar
-      if nr == 1 then 
-        return convert (orderPoly (normalize (remove0 l))) 0
-      if nr == 2 then
-        return addPoly l l
--}
+  putStrLn "1. Normalizar: "
+  putStrLn "2. Adicionar: "
+  putStrLn "3. Multiplicar: "
+  putStrLn "4. Derivada: "
+  nr <-getChar 
+  if nr == '1' then 
+    putStrLn $ convert (orderPoly (normalize (remove0 l))) 0
+  else if nr == '2' then
+    putStrLn $ addPoly l l
+  else do
+    return ()
