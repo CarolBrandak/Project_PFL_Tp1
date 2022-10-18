@@ -14,13 +14,19 @@ remove0 ((x, l1, l2) : xs)
   | x == 0 = xs
   | otherwise = (x, l1, l2) : remove0 xs
 
-comp :: Monomio -> Monomio -> Ordering --Compara para depois ordenar
-comp (_, _, x : _) (_, _, y : _)
+compFirst :: Monomio -> Monomio -> Ordering --Compara para depois ordenar
+compFirst (_, _, x : _) (_, _, y : _)
   | x > y = LT
   | otherwise = GT
 
+variable :: Monomio -> Monomio -> Ordering
+variable (_, )
+
 orderPoly :: Poly -> Poly --Ordena o polinomio
-orderPoly = sortBy comp
+orderPoly = sortBy compFirst
+
+sortMono :: Monomio -> Monomio
+sortMono (x:xs) = sortBy x : sortMono 
 
 recursiveShow :: [(Char, Int)] -> String --Escreve em string a parte das variaveis do polinomio
 recursiveShow [] = ""
@@ -36,7 +42,7 @@ convert ((x, l1, l2) : xs) cnt
   | x > 0 = " + " ++ show x ++ recursiveShow (zip l1 l2) ++ convert xs (cnt + 1)
   | otherwise = " " ++ show x ++ recursiveShow (zip l1 l2) ++ convert xs (cnt + 1)
 
-simplifyMonomial :: Monomio -> Poly -> Monomio --Junta todos os monomios iguals
+simplifyMonomial :: Monomio -> Poly -> Monomio --Junta todos os monomios iguals  (nao considera [x,y,z] e [z,x,y] iguais)
 simplifyMonomial a [] = a
 simplifyMonomial (a, lc1, ln1) ((b, lc2, ln2) : xs2)
   | lc1 == lc2 && ln1 == ln2 = simplifyMonomial (a + b, lc1, ln1) xs2
@@ -67,7 +73,7 @@ multiplyMono :: [(Monomio, Monomio)] -> Poly
 multiplyMono ((m1, m2):xs) = addCoef m1 m2 : multiplyMono xs 
 
 addCoef :: Monomio -> Monomio -> Monomio
-addCoef (a, lc1, ln1) (b, lc2, ln2) = 
+addCoef (a, lc1, ln1) (b, lc2, ln2) = () -- to do
 
 
 
