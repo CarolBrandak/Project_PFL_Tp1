@@ -1,5 +1,5 @@
-import Data.List
 import Data.Char
+import Data.List
 import System.IO
 
 type Monomio = (Int, [Char], [Int])
@@ -16,30 +16,35 @@ remove0 ((x, l1, l2) : xs)
   | x == 0 = xs
   | otherwise = (x, l1, l2) : remove0 xs
 
-compFirst :: Monomio -> Monomio -> Ordering --Compara para depois ordenar
+compFirst :: Monomio -> Monomio -> Ordering --Compara os monomios
 compFirst (_, _, x : _) (_, _, y : _)
   | x > y = LT
   | otherwise = GT
 
-variable :: (Char, Int) -> (Char, Int) -> Ordering
-variable (c1,n1) (c2,n2)
-  | c1 < c2 = LT  
+variable :: (Char, Int) -> (Char, Int) -> Ordering --Orderna as variaveis
+variable (c1, n1) (c2, n2)
+  | c1 < c2 = LT
   | otherwise = GT
 
-orderVar :: Poly -> [(Int, ([Char], [Int]))]  
+orderVar :: Poly -> [(Int, ([Char], [Int]))] --Orderna o polinomio por variaveis
 orderVar [] = []
-orderVar ((a, lc, ln):xs) = (a, unzip (sortBy variable (zip lc ln))) : orderVar xs
+orderVar ((a, lc, ln) : xs) = (a, unzip (sortBy variable (zip lc ln))) : orderVar xs
 
-convertTupleToPoly :: [(Int, ([Char], [Int]))] -> Poly
+convertTupleToPoly :: [(Int, ([Char], [Int]))] -> Poly --Converte a forma que esta as ordenaçoes para Poly normal
 convertTupleToPoly [] = []
-convertTupleToPoly ((a, (lc, ln)):xs) = (a, lc, ln) : convertTupleToPoly xs
+convertTupleToPoly ((a, (lc, ln)) : xs) = (a, lc, ln) : convertTupleToPoly xs
 
+expo :: (Char, Int) -> (Char, Int) -> Ordering --Orderna os expoente
+expo (c1, n1) (c2, n2)
+  | n1 > n2 = LT
+  | otherwise = GT
+
+orderExp :: Poly -> [(Int, ([Char], [Int]))] --Orderna o polinomio por expoentes
+orderExp [] = []
+orderExp ((a, lc, ln) : xs) = (a, unzip (sortBy expo (zip lc ln))) : orderExp xs
 
 orderPoly :: Poly -> Poly --Ordena o polinomio
-orderPoly = sortBy compFirst
-
---sortMono :: Monomio -> Monomio
---sortMono (x:xs) = sortBy x : sortMono 
+orderPoly l = sortBy compFirst (convertTupleToPoly (orderExp l))
 
 recursiveShow :: [(Char, Int)] -> String --Escreve em string a parte das variaveis do polinomio
 recursiveShow [] = ""
@@ -51,7 +56,7 @@ recursiveShow ((a, b) : xs)
 
 convert :: Poly -> Int -> String --Converte o polinomio em string
 convert [] _ = ""
-convert ((x, l1, l2) : xs) 0 
+convert ((x, l1, l2) : xs) 0
   | x == 0 = convert xs 1
   | otherwise = show x ++ recursiveShow (zip l1 l2) ++ convert xs 1
 convert ((x, l1, l2) : xs) cnt
@@ -78,50 +83,42 @@ normalize (x : xs) = simplifyMonomial x xs : normalize a
     a = deleteEqualMon (simplifyMonomial x xs) xs
 
 outputNormalize :: Poly -> String --Converte o polinomio normalizado em string
-outputNormalize l = convert (convertTupleToPoly (orderVar (normalize (remove0 l)))) 0
+outputNormalize l = convert (orderPoly (normalize (convertTupleToPoly (orderVar (remove0 l))))) 0
 
 addPoly :: Poly -> Poly -> String --Adiciona os 2 polinomios
-addPoly poly1 poly2 = convert (convertTupleToPoly (orderVar  (remove0 (normalize (poly1 ++ poly2))))) 0
+addPoly poly1 poly2 = convert (orderPoly (remove0 (normalize (convertTupleToPoly (orderVar poly1) ++ convertTupleToPoly (orderVar poly2))))) 0
 
 generatePoly :: Poly -> Poly -> [(Monomio, Monomio)]
-generatePoly p1 p2 = [(a,b) | a <- p1, b <- p2]
+generatePoly p1 p2 = [(a, b) | a <- p1, b <- p2]
 
 --multiplyMono :: [(Monomio, Monomio)] -> Poly
---multiplyMono ((m1, m2):xs) = joinMono m1 m2 : multiplyMono xs 
+--multiplyMono ((m1, m2):xs) = joinMono m1 m2 : multiplyMono xs
 
 --joinMono :: Monomio -> Monomio -> Monomio
 --joinMono (a, lc1, ln1) (b, lc2, ln2) = () -- to do
 
 derivePoly :: Poly -> Char -> Poly --Deriva um polinomio
 derivePoly [] _ = []
-derivePoly (x:xs) y = deriveMono x y : derivePoly xs y
+derivePoly (x : xs) y = deriveMono x y : derivePoly xs y
 
 deriveMono :: Monomio -> Char -> Monomio --Deriva um monomio
-deriveMono (a,lc,ln) y = (deriveCoef a y lc ln, lc, zipWith (deriveDegree y) lc ln)
-
+deriveMono (a, lc, ln) y = (deriveCoef a y lc ln, lc, zipWith (deriveDegree y) lc ln)
 
 deriveCoef :: Int -> Char -> [Char] -> [Int] -> Int -- Altera o coeficiente de um monomio
-deriveCoef x y lc ln = x * sum(zipWith (findDegree y) lc ln)
+deriveCoef x y lc ln = x * sum (zipWith (findDegree y) lc ln)
 
 findDegree :: Char -> Char -> Int -> Int --Encontra o grau de uma certa variavel num monomio
 findDegree c x y
-    | c == x = y
-    | otherwise = 0
-
+  | c == x = y
+  | otherwise = 0
 
 deriveDegree :: Char -> Char -> Int -> Int --Altera o grau para derivar
 deriveDegree x y c
-    | x == y = c-1
-    | otherwise = c
-
-
-
-
-
-
+  | x == y = c -1
+  | otherwise = c
 
 l :: [(Int, [Char], [Int])]
-l = [(0, ['x','y','z'], [2,0,0]), (2, ['y','z','x'], [2,1,1]), (5, ['x','y','z'], [0, 0, 1]), (1, ['x','y','z'], [0, 1, 0]), (7, ['x','y','z'], [0, 2, 0]), (2, ['x','y','z'], [1, 0, 0])]
+l = [(2, ['x', 'y', 'z'], [0, 1, 2]), (-6, ['x', 'z', 'y'], [0, 2, 1]), (4, ['x', 'y', 'z'], [0, 0, 3]), (5, ['z', 'y', 'x'], [3, 0, 0])]
 
 --[(0, ['x','y','z'], [2,0,0]), (2, ['x','y','z'], [0,1,0]), (5, ['x','y','z'], [0, 0, 1]), (1, ['x','y','z'], [0, 1, 0]), (7, ['x','y','z'], [0, 2, 0]), (2, ['x','y','z'], [1, 0, 0])]
 --[(2, ['x','y','z'], [0,1,2]), (-6, ['x','y','z'], [0,1,2]), (4, ['x','y','z'], [0, 0, 3]), (5, ['x','y','z'], [0, 0, 3])]
@@ -133,13 +130,15 @@ main = do
   putStrLn "2. Adicionar: "
   putStrLn "3. Multiplicar: "
   putStrLn "4. Derivada: "
-  nr <-getChar 
-  if nr == '1' then 
-    putStrLn $ outputNormalize l
-  else if nr == '2' then
-    putStrLn $ addPoly l l
-
-  else if nr == '4' then do
-      putStrLn $ convert (convertTupleToPoly(orderVar (remove0 (normalize(derivePoly l 'y'))))) 0
-  else do
-    return ()
+  nr <- getChar
+  if nr == '1'
+    then putStrLn $ outputNormalize l
+    else
+      if nr == '2'
+        then putStrLn $ addPoly l l
+        else
+          if nr == '4'
+            then do
+              putStrLn $ convert (convertTupleToPoly (orderVar (remove0 (normalize (derivePoly l 'y'))))) 0
+            else do
+              return ()
