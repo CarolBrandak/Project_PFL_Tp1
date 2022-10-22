@@ -1,10 +1,11 @@
+module T1 where
+
 import Data.Char
 import Data.List
 import System.IO
 
-type Monomio = (Int, [Char], [Int])
-
-type Poly = [Monomio]
+import Polinomio
+import Data.Binary.Get (isEmpty)
 
 --[(2, ['x','y','z'], [0,1,2]), (-6, ['x','y','z'], [0,1,2])] 2*y*z^2 - 6*y*z^2
 --[(2, ['x','y','z'], [0,1,2]), (-6, ['x','y','z'], [0,1,2]), (4, ['x','y','z'], [1, 0, 3]), (5, ['x','y','z'], [1, 0, 3])]
@@ -17,6 +18,8 @@ remove0 ((x, l1, l2) : xs)
   | otherwise = (x, l1, l2) : remove0 xs
 
 compFirst :: Monomio -> Monomio -> Ordering --Compara os monomios
+compFirst (_,[],[]) (_,_,_) = GT
+compFirst (_,_,_) (_,[],[]) = LT
 compFirst (_, _, x : _) (_, _, y : _)
   | x > y = LT
   | otherwise = GT
@@ -101,7 +104,7 @@ derivePoly :: Poly -> Char -> Poly --Deriva um polinomio
 derivePoly [] _ = []
 derivePoly (x:xs) y 
   | getCoef (deriveMono x y) == 0 = derivePoly xs y
-  | otherwise = (deriveMono x y) : derivePoly xs y
+  | otherwise = deriveMono x y : derivePoly xs y
 
 getCoef :: Monomio -> Int
 getCoef (x,_,_) = x
@@ -110,7 +113,9 @@ deriveMono :: Monomio -> Char -> Monomio --Deriva um monomio
 deriveMono (a, lc, ln) y = (deriveCoef a y lc ln, lc, zipWith (deriveDegree y) lc ln)
 
 deriveCoef :: Int -> Char -> [Char] -> [Int] -> Int -- Altera o coeficiente de um monomio
-deriveCoef x y lc ln = x * sum (zipWith (findDegree y) lc ln)
+deriveCoef x y lc ln 
+ | elem y lc = x * sum (zipWith (findDegree y) lc ln)
+ | otherwise = 0
 
 findDegree :: Char -> Char -> Int -> Int --Encontra o grau de uma certa variavel num monomio
 findDegree c x y
@@ -122,28 +127,7 @@ deriveDegree x y c
   | x == y = c -1
   | otherwise = c
 
-l :: [(Int, [Char], [Int])]
-l = [(2, ['x', 'y', 'z'], [0, 1, 2]), (-6, ['x', 'z', 'y'], [0, 2, 1]), (4, ['x', 'y', 'z'], [0, 0, 3]), (5, ['z', 'y', 'x'], [3, 0, 0])]
-
 --[(0, ['x','y','z'], [2,0,0]), (2, ['x','y','z'], [0,1,0]), (5, ['x','y','z'], [0, 0, 1]), (1, ['x','y','z'], [0, 1, 0]), (7, ['x','y','z'], [0, 2, 0]), (2, ['x','y','z'], [1, 0, 0])]
 --[(2, ['x','y','z'], [0,1,2]), (-6, ['x','y','z'], [0,1,2]), (4, ['x','y','z'], [0, 0, 3]), (5, ['x','y','z'], [0, 0, 3])]
 --[(0, ['x','y','z'], [2,0,0]), (2, ['x','y','z'], [0,1,0]), (5, ['x','y','z'], [0, 0, 1]), (1, ['x','y','z'], [0, 1, 0]), (7, ['x','y','z'], [0, 2, 0])]
 
-main :: IO () --Menu
-main = do
-  putStrLn "1. Normalizar: "
-  putStrLn "2. Adicionar: "
-  putStrLn "3. Multiplicar: "
-  putStrLn "4. Derivada: "
-  nr <- getChar
-  if nr == '1'
-    then putStrLn $ outputNormalize l
-    else
-      if nr == '2'
-        then putStrLn $ addPoly l l
-        else
-          if nr == '4'
-            then do
-              putStrLn $ convert (convertTupleToPoly (orderVar (remove0 (normalize (derivePoly l 'y'))))) 0
-            else do
-              return ()
