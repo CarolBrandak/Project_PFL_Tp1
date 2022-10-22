@@ -148,7 +148,7 @@ deleteEqualVar (c1, n1) ((c2, n2) : xs)
   | otherwise = (c2, n2) : deleteEqualVar (c1, n1) xs
 
 derivePoly :: Poly -> Char -> Poly --Deriva um polinomio
-derivePoly l c = orderPoly (convertTupleToPoly (orderVar (remove0 (convertTupleToPoly (joinVarsPoly (normalize (derivePoly l c)))))))
+derivePoly l c = orderPoly (convertTupleToPoly (orderVar (remove0 (convertTupleToPoly (joinVarsPoly (normalize (derive l c)))))))
 
 derive :: Poly -> Char -> Poly --Deriva um polinomio
 derive [] _ = []
