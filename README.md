@@ -4,14 +4,13 @@
 
 TODO:
  - [x] Output ser string
- - [ ] Organizar
+ - [x] Organizar
  - [x] Normalizar um polinomio a
  - [x] Adicionar polinomios b
  - [ ] Multiplicar polinomios c
- - [ ] Derivado de um polinomio d
-
-Extra:
+ - [x] Derivado de um polinomio d
  - [ ] Input ser string
+ - [ ] QuickCheck
 
 
 G10_04
@@ -19,5 +18,4 @@ G10_04
  - [x] Carolina Brandão
  - [x] Diogo Rodrigues        
  - [x] Jorge Costa
-
 
