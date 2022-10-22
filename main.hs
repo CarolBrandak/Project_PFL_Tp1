@@ -27,7 +27,7 @@ main = do
         else
           if nr == '3'
             then do
-              putStrLn $ outputMulti l l
+              putStrLn $ outputMulti l l 
             else
               if nr == '4'
                 then do
