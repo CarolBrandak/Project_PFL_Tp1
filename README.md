@@ -7,7 +7,7 @@ TODO:
  - [x] Organizar
  - [x] Normalizar um polinomio a
  - [x] Adicionar polinomios b
- - [ ] Multiplicar polinomios c
+ - [x] Multiplicar polinomios c
  - [x] Derivado de um polinomio d
  - [ ] Input ser string
  - [ ] QuickCheck
