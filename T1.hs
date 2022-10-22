@@ -120,7 +120,12 @@ deleteEqualVar (c1, n1) ((c2, n2) : xs)
 
 derivePoly :: Poly -> Char -> Poly --Deriva um polinomio
 derivePoly [] _ = []
-derivePoly (x : xs) y = deriveMono x y : derivePoly xs y
+derivePoly (x:xs) y 
+  | getCoef (deriveMono x y) == 0 = derivePoly xs y
+  | otherwise = (deriveMono x y) : derivePoly xs y
+
+getCoef :: Monomio -> Int
+getCoef (x,_,_) = x
 
 deriveMono :: Monomio -> Char -> Monomio --Deriva um monomio
 deriveMono (a, lc, ln) y = (deriveCoef a y lc ln, lc, zipWith (deriveDegree y) lc ln)
