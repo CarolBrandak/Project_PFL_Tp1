@@ -11,13 +11,20 @@ main = do
   putStrLn "4. Derivada: "
   nr <- getChar
   if nr == '1'
-    then putStrLn $ outputNormalize p1
+    then do
+      putStrLn $ outputNormalize l
     else
       if nr == '2'
-        then putStrLn $ outputAdd p1 p1
+        then do
+          putStrLn $ outputAdd l l
         else
-          if nr == '4'
+          if nr == '3'
             then do
-              putStrLn $ convert (convertTupleToPoly (orderVar (remove0 (normalize (derivePoly p1 'y'))))) 0
-            else do
-              return ()
+              putStrLn $ outputMulti l l 
+            else
+              if nr == '4'
+                then do
+                  c <- getChar
+                  putStrLn $ outputDerive l c
+                else do
+                  return ()
