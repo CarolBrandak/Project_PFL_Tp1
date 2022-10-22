@@ -32,8 +32,8 @@ recursiveShow :: [(Char, Int)] -> String --Escreve em string a parte das variave
 recursiveShow [] = ""
 recursiveShow ((a, 0) : xs) = recursiveShow xs
 recursiveShow ((a, b) : xs)
-  | null xs = "*" ++ [a] ++ "^" ++ show b
-  | otherwise = "*" ++ [a] ++ "^" ++ show b ++ recursiveShow xs
+  | null xs = [a] ++ "^" ++ show b
+  | otherwise = [a] ++ "^" ++ show b ++ recursiveShow xs
 
 convert :: Poly -> Int -> String --Converte o polinomio em string
 convert [] _ = ""
@@ -87,7 +87,7 @@ deriveMono (a,lc,ln) y = (deriveCoef a y lc ln, lc, zipWith (deriveDegree y) lc 
 
 
 deriveCoef :: Int -> Char -> [Char] -> [Int] -> Int -- Altera o coeficiente de um monomio
-deriveCoef x y lc ln = x * (sum(zipWith (findDegree y) lc ln))
+deriveCoef x y lc ln = x * sum(zipWith (findDegree y) lc ln)
 
 findDegree :: Char -> Char -> Int -> Int --Encontra o grau de uma certa variavel num monomio
 findDegree c x y
@@ -99,10 +99,6 @@ deriveDegree :: Char -> Char -> Int -> Int --Altera o grau para derivar
 deriveDegree x y c
     | x == y = c-1
     | otherwise = c
-
-
-
-
 
 
 
@@ -126,6 +122,6 @@ main = do
     putStrLn $ addPoly l l
 
   else if nr == '4' then do
-      putStrLn (convert (derivePoly l 'y') 0)
+      putStrLn $ convert (derivePoly l 'y') 0
   else do
     return ()
