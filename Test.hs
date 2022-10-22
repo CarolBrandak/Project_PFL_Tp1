@@ -6,12 +6,12 @@ import T1
 addTest1 :: IO ()
 addTest1 = do putStrLn $ "(" ++ convert p1 0 ++ ") + (" ++ convert p2 0 ++ ")"
               putStrLn $ "Expected: " ++ convert [(2,['x'],[2]), (1,['x','y'],[1,1]), (5,['x'],[1]), (4,[],[])] 0 
-              putStrLn $ "Result:   " ++ addPoly p1 p2 ++ "\n"
+              putStrLn $ "Result:   " ++ outputAdd p1 p2 ++ "\n"
 
 addTest2 :: IO ()
 addTest2 = do putStrLn $ "(" ++ convert p3 0 ++ ") + (" ++ convert p4 0 ++ ")"
               putStrLn $ "Expected: " ++ convert [(1,['x','y','z'], [2,3,4]), (2,['w','z','x','a','e'],[1,1,1,1,1]), (2,['x'],[1]), (31,[],[])] 0
-              putStrLn $ "Result:   " ++ addPoly p3 p4 ++ "\n"
+              putStrLn $ "Result:   " ++ outputAdd p3 p4 ++ "\n"
 
 
 deriveTest1 :: IO ()

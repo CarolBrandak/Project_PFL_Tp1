@@ -14,7 +14,7 @@ main = do
     then putStrLn $ outputNormalize p1
     else
       if nr == '2'
-        then putStrLn $ addPoly p1 p1
+        then putStrLn $ outputAdd p1 p1
         else
           if nr == '4'
             then do
