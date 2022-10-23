@@ -9,7 +9,7 @@ TODO:
  - [x] Adicionar polinomios b
  - [x] Multiplicar polinomios c
  - [x] Derivado de um polinomio d
- - [ ] Input ser string
+ - [x] Input ser string
  - [ ] QuickCheck
 
 
