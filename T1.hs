@@ -1,3 +1,4 @@
+
 module T1 where
 
 import Data.Char
@@ -31,7 +32,7 @@ sortLength :: Monomio -> Monomio -> Ordering
 sortLength (x1, lc1, x : xs) (x2, lc2, y : ys)
   | length lc1 > length lc2 = LT
   | length lc1 < length lc2 = GT
-  | length lc1 == length lc2 = sortAlph (head lc1) (head lc2) 
+  | length lc1 == length lc2 = sortAlph (head lc1) (head lc2)
 
 sortAlph :: Char -> Char -> Ordering
 sortAlph a b
@@ -186,3 +187,25 @@ outputMulti poly1 poly2 = convert (multiPoly poly1 poly2) 0
 
 outputDerive :: Poly -> Char -> String --Output de derivar 1 polinomio conforme a variavel
 outputDerive l c = convert (derivePoly l c) 0
+
+convertStringPoly :: String -> Poly
+convertStringPoly [] = []
+convertStringPoly (x:xs)
+ | x =='-' = convertStringMonoCoef (x:takeWhile (\x -> (x/='+') && (x/='-')) xs)  :convertStringPoly (dropWhile (\x -> (x/='+') && (x/='-')) xs)
+ | x =='+' = convertStringMonoCoef (takeWhile (\x -> (x/='+') && (x/='-')) xs)  :convertStringPoly (dropWhile (\x -> (x/='+') && (x/='-')) xs)
+ | otherwise = convertStringMonoCoef (x:takeWhile (\x -> (x/='+') && (x/='-')) xs)  :convertStringPoly (dropWhile (\x -> (x/='+') && (x/='-')) (x:xs))
+
+convertStringMonoCoef :: String -> Monomio
+convertStringMonoCoef ('-':a:xs) = convertStringMonoVars xs (digitToInt a - 2 * digitToInt a, [], [])
+convertStringMonoCoef (a:xs)
+  | isDigit a = convertStringMonoVars xs (digitToInt a, [], [])
+  | xs == "" = (digitToInt a, [], [])
+  | otherwise = convertStringMonoVars xs (1, [], [])
+
+convertStringMonoVars :: String -> Monomio -> Monomio
+convertStringMonoVars "" m1 = m1
+convertStringMonoVars [a] (x, lc, ln) = (x, lc++[a], ln++[1])
+convertStringMonoVars (a:b:xs) (x, lc, ln)
+  | isAlpha a && isAlpha b = convertStringMonoVars (b:xs) (x, lc++[a], ln++[1])
+convertStringMonoVars (a:b:c:xs) (x, lc, ln)
+  | isAlpha a && b == '^' && isDigit c = convertStringMonoVars xs (x, lc++[a], ln++[digitToInt c])
