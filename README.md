@@ -1,4 +1,4 @@
-# Project_PFL
+# TP1_G10_04
 
 ## Representação interna
 
@@ -39,9 +39,8 @@ Já para correr o programa principal é preciso chamar a função main, esta vai
 
 
 
-
-
 TODO:
+
  - [x] Output ser string
  - [x] Organizar
  - [x] Normalizar um polinomio 
